@@ -11,21 +11,20 @@ import uvm_pkg::*;
 `include "my_model.sv"
 `include "my_scb.sv"
 `include "my_env.sv"
-`include "my_base_test.sv"
+`include "my_test.sv"
 module tb_top;
   logic clk, rstn;
-  my_vif in(clk, rstn);
-  my_vif out(clk,rstn);
-  dut my_dut (.rxd(in.data), .rx_dv(in.valid), txd(out.data), tx_dv(out.valid),.*);
+  my_if in(clk, rstn);
+  my_if out(clk,rstn);
+  dut my_dut (.rxd(in.data), .rx_dv(in.valid), .txd(out.data), .tx_en(out.valid), .*);
   
   
   initial begin
     //[1]set to null bcz tb_top is not class
-    uvm_config_db#(virtual my_vif)::set(null,"*", "global_vif", in);
-    run_test("my_base_test");
-    uvm_config_db#(virtual my_vif)::set(null,"uvm_test_top.final_env.in_ag.mon_inside_ag", "mon_vif", in);
-    uvm_config_db#(virtual my_vif)::set(null,"uvm_test_top.final_env.out_ag.mon_inside_ag", "mon_vif", out);
-    run_test("my_base_test");
+    uvm_config_db#(virtual my_if)::set(null,"*", "global_vif", in);
+    uvm_config_db#(virtual my_if)::set(null,"uvm_test_top.final_env.in_ag.mon_inside_ag", "mon_vif", in);
+    uvm_config_db#(virtual my_if)::set(null,"uvm_test_top.final_env.out_ag.mon_inside_ag", "mon_vif", out);
+    run_test("base_test");
   end
   initial begin
     {clk, rstn} = 0;
