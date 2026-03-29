@@ -1,0 +1,36 @@
+// Create transaction
+axi_txn txn = new();
+
+// Generate random values
+txn.randomize();
+
+// Constrain
+txn.randomize() with {txn.addr inside {[0:100]};};
+
+// Create object from type ID
+axi_txn txn2 = axi_txn::type_id::create("txn2");
+
+// Print
+`uvm_info("TAG", $sformatf("Value: %0d", txn.value), UVM_LOW)
+
+// Error
+`uvm_error("TAG", "Something went wrong")
+
+// Do macro (execute sequence)
+`uvm_do_with(req, {constraint})
+
+// Wait for phases
+wait_for_phase_done();
+
+// Get config from DB
+uvm_config_db #(type)::get(this, "", "param_name", value)
+
+// Set config in DB
+uvm_config_db #(type)::set(null, "scope", "param_name", value)
+
+// Analysis port
+uvm_analysis_port #(txn) port;
+port.write(txn);
+
+// Analysis export
+uvm_analysis_imp #(txn, class) export;
